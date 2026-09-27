@@ -88,3 +88,25 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+export const searchProducts = async (req, res) => {
+  try {
+    const { q } = req.query
+
+    if (!q) {
+      return res.json([])
+    }
+
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+        { category: { $regex: q, $options: 'i' } },
+      ],
+    })
+
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}

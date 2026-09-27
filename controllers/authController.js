@@ -81,3 +81,12 @@ export const loginUser = async (req, res) => {
   }
 }
 
+export const getAllCustomers = async (req, res) => {
+  try {
+    const users = await User.find({ role: 'customer' }).select('-password')
+    res.json(users)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
