@@ -13,7 +13,7 @@ export const initializePayment = async (req, res) => {
     {
         email: req.user.email,
         amount: order.totalPrice * 100,
-        callback_url: 'http://localhost:5173/payment-success',
+        callback_url: 'https://abuja-store-backend.onrender.com/payment-success',
         metadata: { orderId: order._id.toString() },
     },
     {
