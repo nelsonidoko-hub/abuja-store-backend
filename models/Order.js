@@ -47,7 +47,12 @@ const orderSchema = new mongoose.Schema(
       state: String,
       postalCode: String,
       phone: { type: String, required: true },
-      type: String, // e.g. 'Store Pickup'
+      // NOTE: do not name a field "type" inside a nested object — Mongoose
+      // reserves that key to mean "the type of this whole path", so
+      // { ..., type: String, location: String } gets misread as
+      // "shippingAddress is of type String", not as a nested field.
+      // Renamed to pickupType to avoid the collision.
+      pickupType: String, // e.g. 'Store Pickup'
       location: String, // e.g. 'Main Retail Store Branch'
     },
     totalPrice: { type: Number, required: true },
