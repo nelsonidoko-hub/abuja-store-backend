@@ -1,5 +1,7 @@
 import Product from '../models/Product.js'
 
+const ACCESSORY_SUBTYPES = ['school-bags', 'watches', 'belts', 'sunglasses']
+
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find()
@@ -25,12 +27,22 @@ export const getProductById = async (req, res) => {
 
 export const getProductsByCategory = async (req, res) => {
   try {
-    // category is stored lowercase (schema has lowercase: true), so the
-    // query filter needs to match that or lookups with different casing
-    // in the URL (e.g. /category/Shoes) silently return nothing.
-    const products = await Product.find({
-      category: req.params.categoryName.toLowerCase(),
+    const categoryName = req.params.categoryName.toLowerCase()
+
+    // "Accessories" is a parent bucket: it should also pull in products
+    // tagged with one of its subtypes (school-bags, watches, belts,
+    // sunglasses), not just products tagged literally "accessories".
+    const namesToMatch =
+      categoryName === 'accessories' ? ['accessories', ...ACCESSORY_SUBTYPES] : [categoryName]
+
+    // Build a case-insensitive exact match for each name, tolerant of
+    // hyphen vs space (e.g. "school-bags" vs "school bags").
+    const orConditions = namesToMatch.map((name) => {
+      const normalized = name.replace(/-/g, ' ')
+      return { category: { $regex: `^${normalized}$`, $options: 'i' } }
     })
+
+    const products = await Product.find({ $or: orConditions })
     res.json(products)
   } catch (error) {
     res.status(500).json({ message: error.message })
