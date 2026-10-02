@@ -48,6 +48,18 @@ function itemsTable(order) {
 const viewButton = (order) =>
   `<p><a href="${orderUrl(order)}" style="background:#111;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;display:inline-block">View your order</a></p>`
 
+export async function sendPasswordReset(user, resetUrl) {
+  await sendEmail({
+    to: user.email,
+    subject: 'Reset your password',
+    html: layout(
+      'Reset your password',
+      `<p>Hi ${esc(user.name)}, click below to set a new password. This link expires in 30 minutes.</p>
+       <p><a href="${esc(resetUrl)}" style="background:#111;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;display:inline-block">Reset password</a></p>
+       <p style="color:#888;font-size:13px">If you did not request this, you can ignore this email.</p>`
+    ),
+  })
+}
 export async function sendOrderConfirmation(order) {
   const a = order.shippingAddress
   await sendEmail({

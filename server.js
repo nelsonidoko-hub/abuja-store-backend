@@ -7,7 +7,8 @@ import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'   
 import uploadRoutes from './routes/uploadRoutes.js'      
-import { startOrderExpiryJob } from './utils/expireOrders.js'                                                                                                                        
+import { startOrderExpiryJob } from './utils/expireOrders.js'  
+import adminRoutes from './routes/adminRoutes.js'                                                                                                                      
 // ...
 
 
